@@ -78,4 +78,45 @@ router.route('/getduty/:id').get(async (req, res) => {
     }
 });
 
+router.route('/editduty/:id').put(async (req, res) => {
+
+    const dutyId = req.params.id;
+
+    const {
+        employeeId,
+        dutyDate,
+        vehicleId,
+        startLocation,
+        endLocation,
+        distance,
+        dutyStatus,
+        shift,
+        notes,
+    } = req.body;
+
+    const updateDuty = {
+
+        employeeId,
+        dutyDate,
+        vehicleId,
+        startLocation,
+        endLocation,
+        distance,
+        dutyStatus,
+        shift,
+        notes,
+    }
+
+    try {
+
+        await Duty.findByIdAndUpdate(dutyId, updateDuty);
+        return res.status(200).json({ status: "Duty updated" });
+
+    } catch (error) {
+
+        return res.status(500).json({ status: "Error with update duty", message: error });
+
+    }
+});
+
 module.exports = router;

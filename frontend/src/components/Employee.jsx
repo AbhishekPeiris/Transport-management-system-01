@@ -228,139 +228,37 @@ const MyDocument = ({ factors }) => (
 );
 
 function Employee() {
-  const [selectedCropFactors, setSelectedCropFactors] = useState(null); // State to hold the selected crop's data
+
   const [size, setSize] = useState('large');
-  const [factors, setFactors] = useState([]);
-
-  const [filterFactors, setFilterFactors] = useState([]);
-  const [selectedProvince, setSelectedProvince] = useState(null);
-  const [selectedDistrict, setSelectedDistrict] = useState(null);
-
-
-
-  const [province, setProvince] = useState('');
-  const [district, setDistrict] = useState('');
-  const [soiltype, setSoiltype] = useState('');
-  const [soilph, setSoilph] = useState('');
-  const [nutrientcontent, setNutrientcontent] = useState('');
-  const [temperature, setTemperature] = useState('');
-  const [rainfall, setrainfall] = useState('');
-  const [humidity, setHumidity] = useState('');
-  const [altitude, setAltitude] = useState('');
-  const [topography, setTopography] = useState('');
-  const [irrigationsystems, setIrrigationsystems] = useState('');
-  const [waterquality, setWaterquality] = useState('');
-  const [varietyselection, setVarietyselection] = useState('');
-  const [growthcycle, setGrowthcycle] = useState('');
-  const [pestpressure, setPestpressure] = useState('');
-  const [diseaseincidence, setDiseaseincidence] = useState('');
-  const [croprotation, setCroprotation] = useState('');
-  const [fertilizeruse, setFertilizeruse] = useState('');
-  const [demandandpricetrends, setDemandandpricetrends] = useState('');
-  const [supplychainefficiency, setsupplychainefficiencyion] = useState('');
-
   const [messageApi, contextHolder] = message.useMessage();
 
-  const [updatOpen, setUpdateOpen] = useState(false);
+// read
+  const [employees, setEmployees] = useState([]);
+  const [filterEmployees, setFilterEmployees] = useState([])
 
-  const [updateForm] = Form.useForm();
+// create update
+  const [firstname, setFirstname] = useState('');
+  const [lastname, setLastname] = useState('');
+  const [dob, setDob] = useState('');
+  const [address, setAddress] = useState('');
+  const [gender, setGender] = useState('');
+  const [contact, setContact] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [status, setStatus] = useState('');
+  const [role, setRole] = useState('');
 
-
-
-  const updateShowDrawer = (factors) => {
-    setSelectedCropFactors(factors);
-    setUpdateOpen(true);
-
-    // Update the form fields with the selected crop's data
-    updateForm.setFieldsValue({
-      province: factors.province,
-      district: factors.district,
-      soiltype: factors.soiltype,
-      soilph: factors.soilph,
-      nutrientcontent: factors.nutrientcontent,
-      temperature: factors.temperature,
-      rainfall: factors.rainfall,
-      humidity: factors.humidity,
-      altitude: factors.altitude,
-      topography: factors.topography,
-      irrigationsystems: factors.irrigationsystems,
-      waterquality: factors.waterquality,
-      varietyselection: factors.varietyselection,
-      growthcycle: factors.growthcycle,
-      pestpressure: factors.pestpressure,
-      diseaseincidence: factors.diseaseincidence,
-      croprotation: factors.croprotation,
-      fertilizeruse: factors.fertilizeruse,
-      demandandpricetrends: factors.demandandpricetrends,
-      supplychainefficiency: factors.supplychainefficiency,
-    });
-
-  };
-
-  const handleUpdateCropFactors = async () => {
-
-    try {
-      // Validate and get the form values
-      const values = await updateForm.validateFields();
-
-      // Check if all required fields are filled
-      if (Object.values(values).some(value => value === undefined || value === '')) {
-        addWarning('Please fill in all required fields.');
-        return;
-      }
-
-      // Validation for numeric fields
-      if (isNaN(values.soilph) || values.soilph === '') {
-        addWarning('Please enter a valid number for Soil PH.');
-        return;
-      }
-
-      const updatedFactors = {
-        ...selectedCropFactors,
-        province: values.province,
-        district: values.district,
-        soiltype: values.soiltype,
-        soilph: parseFloat(values.soilph),
-        nutrientcontent: values.nutrientcontent,
-        temperature: values.temperature,
-        rainfall: values.rainfall,
-        humidity: values.humidity,
-        altitude: values.altitude,
-        topography: values.topography,
-        irrigationsystems: values.irrigationsystems,
-        waterquality: values.waterquality,
-        varietyselection: values.varietyselection,
-        growthcycle: values.growthcycle,
-        pestpressure: values.pestpressure,
-        diseaseincidence: values.diseaseincidence,
-        croprotation: values.croprotation,
-        fertilizeruse: values.fertilizeruse,
-        demandandpricetrends: values.demandandpricetrends,
-        supplychainefficiency: values.supplychainefficiency,
-      };
-
-      // Send update request to your API
-      const response = await axios.put(`http://localhost:5000/api/cropfactors/editcropfactor/${selectedCropFactors._id}`, updatedFactors);
-      messageApi.success('Crop factors updated successfully!').then(() => {
-        window.location.reload();
-      });;
-      setUpdateOpen(false);
-    } catch (error) {
-      console.error(error);
-      messageApi.error('Failed to update crop factors. Please try again.');
-    }
-  };
+  const [openAddEmployee, setOpenEmployee] = useState(false);
 
 
-  const updateOnClose = () => {
-    setUpdateOpen(false);
-  };
-
-  const addWarning = (warningMessage) => {
-    messageApi.warning(warningMessage);
-  };
-
+// table
   const columns = [
+    {
+      title: 'Employee ID',
+      dataIndex: '_id',
+      key: '_id',
+      className: 'px-4',
+    },
     {
       title: 'Firstname',
       dataIndex: 'firstname',
@@ -433,122 +331,110 @@ function Employee() {
     },
   ];
 
+  // read
   useEffect(() => {
-    async function fetchCropsfactors() {
+    async function fetchEployees() {
       try {
-        const response = await axios.post("http://localhost:5000/api/cropfactors/getcropfactors");
-        console.log("Crops factors:", response.data.cropfactors);
+        const response = await axios.post("http://localhost:5000/api/employee/getemployee");
 
-        const factorsWithKeys = response.data.cropfactors.map((factor, index) => ({
-          ...factor,
-          key: factor._id || index,
+        const emloyeesWithKeys = response.data.employee.map((employee, index) => ({
+          ...employee,
+          key: employee._id || index,
         }));
-        setFactors(factorsWithKeys);
-        setFilterFactors(factorsWithKeys);
+        setEmployees(emloyeesWithKeys);
+        setFilterEmployees(emloyeesWithKeys);
 
       } catch (error) {
-        console.log("Error fetching crops:", error);
+        console.log("Error fetching eployee:", error);
       }
     }
-    fetchCropsfactors();
+    fetchEployees();
   }, []);
 
-  useEffect(() => {
-    filterCropFactors();
-  }, [selectedProvince, selectedDistrict, factors]);
 
-  const filterCropFactors = () => {
-    let filtered = [...factors];
+// create
+  const addSuccess = () => {
+    messageApi.success('Employee added successfully!').then(() => {
+      window.location.reload();
+    });
+  };
 
-    if (selectedProvince && selectedProvince !== 'All') {
-      filtered = filtered.filter(factors => factors.province === selectedProvince);
+  const addError = () => {
+    messageApi.error('Failed to add employee. Please try again.');
+  };
+
+  const addWarning = (warningMessage) => {
+    messageApi.warning(warningMessage);
+  };
+
+  async function addNewEmployee(e) {
+    e.preventDefault();
+
+    if (firstname === '' || lastname === '' || dob === '' || address === '' || gender === '' || contact === '' ||
+      email === '' || password === '' || status === '' || role === '') {
+      addWarning('Please fill in all required fields.');
+      return;
     }
 
-    if (selectedDistrict && selectedDistrict !== 'All') {
-      filtered = filtered.filter(factors => factors.district === selectedDistrict);
+    const newemployee = {
+      firstname: firstname,
+      lastname: lastname,
+      dob: dob,
+      address: address,
+      gender: gender,
+      contact: contact,
+      email: email,
+      password: password,
+      status: status,
+      role: role
     }
 
+    try {
+      const response = await axios.post('http://localhost:5000/api/employee/register', newemployee);
+      console.log(response.data);
+      addSuccess();
+      setFirstname('');
+      setLastname('');
+      setDob('');
+      setAddress('');
+      setGender('');
+      setContact('');
+      setEmail('');
+      setPassword('');
+      setStatus('');
+      setRole('');
 
-    setFilterFactors(filtered);
+
+    } catch (error) {
+      console.log(error);
+      addError();
+    }
+  }
+
+  const showDrawer = () => {
+    setOpenEmployee(true);
   };
 
-  const handleProvinceChange = (value) => {
-    setSelectedProvince(value);
+  const onClose = () => {
+    setOpenEmployee(false);
   };
 
-  const handleDistrictChange = (value) => {
-    setSelectedDistrict(value);
-  };
-
+  // update
+  function updateShowDrawer(we) {
+    
+  }
 
 
   return (
     <>
       {contextHolder}
       <div className="flex justify-start gap-[25px] items-center h-[74px] bg-white rounded-[11px] m-[15px] px-[15px]">
-        <div className="w-[250px] h-[29px] text-slate-900 text-xl font-semibold font-['Poppins']">Crop Prediction Factors</div>
-        <Select
-          placeholder="Select planting season"
-          style={{
-            width: '200px',
-            height: '40px',
-          }}
-          size='large'
-          onChange={handleProvinceChange}
-          defaultValue="All"
-        >
-          <Option value="All">Province -- All</Option>
-          <Option value="Western">Western</Option>
-          <Option value="Central">Central</Option>
-          <Option value="Southern">Southern</Option>
-          <Option value="Northern">Northern</Option>
-          <Option value="Eastern">Eastern</Option>
-          <Option value="North Western">North Western</Option>
-          <Option value="North Central">North Central</Option>
-          <Option value="Uva">Uva</Option>
-          <Option value="Sabaragamuwa">Sabaragamuwa</Option>
-        </Select>
-        <Select
-          placeholder="Select water requirements"
-          style={{
-            width: '250px',
-            height: '40px',
-          }}
-          size='large'
-          onChange={handleDistrictChange}
-          defaultValue="All"
-        >
-          <Option value="All">District -- All</Option>
-          <Option value="Colombo">Colombo</Option>
-          <Option value="Gampaha">Gampaha</Option>
-          <Option value="Kalutara">Kalutara</Option>
-          <Option value="Kandy">Kandy</Option>
-          <Option value="Matale">Matale</Option>
-          <Option value="Nuwara Eliya">Nuwara Eliya</Option>
-          <Option value="Galle">Galle</Option>
-          <Option value="Matara">Matara</Option>
-          <Option value="Hambantota">Hambantota</Option>
-          <Option value="Jaffna">Jaffna</Option>
-          <Option value="Kilinochchi">Kilinochchi</Option>
-          <Option value="Mannar">Mannar</Option>
-          <Option value="Vavuniya">Vavuniya</Option>
-          <Option value="Mullaitivu">Mullaitivu</Option>
-          <Option value="Trincomalee">LTrincomaleeow</Option>
-          <Option value="Batticaloa">Batticaloa</Option>
-          <Option value="Ampara">Ampara</Option>
-          <Option value="Kurunegala">Kurunegala</Option>
-          <Option value="Puttalam">Puttalam</Option>
-          <Option value="Anuradhapura">Anuradhapura</Option>
-          <Option value="Polonnaruwa">Polonnaruwa</Option>
-          <Option value="Badulla">Badulla</Option>
-          <Option value="Monaragala">Monaragala</Option>
-          <Option value="Ratnapura">Ratnapura</Option>
-          <Option value="Kegalle">Kegalle</Option>
-        </Select>
+        <div className="w-[250px] h-[29px] text-slate-900 text-xl font-semibold font-['Poppins']">Employees</div>
+      
 
-
+        {/* PDF */}
         <PDFDownloadLink
-          document={<MyDocument factors={filterFactors} />}
+          document={<MyDocument factors={filterEmployees} />}
           fileName="crop_factors.pdf"
         >
           {({ blob, url, loading, error }) =>
@@ -561,18 +447,240 @@ function Employee() {
             )
           }
         </PDFDownloadLink>
+
+        {/* Create */}
+        <Button type="primary" icon={<Icon icon="ic:baseline-plus" />} className="bg-[black] ml-auto font-['Poppins'] w-[180px] h-[40px]" onClick={showDrawer} >
+          Add New Employee
+        </Button>
+
+        <Drawer
+          title="Add Employee"
+          width={720}
+          onClose={onClose}
+          open={openAddEmployee}
+          extra={
+            <Space>
+              <Button onClick={onClose}>Cancel</Button>
+              <Button onClick={addNewEmployee} type="primary" className='bg-[black]'>
+                Submit
+              </Button>
+            </Space>
+          }
+        >
+          <Form layout="vertical">
+            <Row gutter={16}>
+              <Col span={12}>
+                <Form.Item
+                  name="firstname"
+                  label="First name"
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Please enter first name',
+                    },
+                  ]}
+                >
+                  <Input
+                    placeholder="Enter first name"
+                    value={firstname}
+                    onChange={(e) => setFirstname(e.target.value)}
+                  />
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item
+                  name="lastname"
+                  label="Last name"
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Please enter last name',
+                    },
+                  ]}
+                >
+                  <Input
+                    placeholder="Enter lastname"
+                    value={lastname}
+                    onChange={(e) => setLastname(e.target.value)}
+                  />
+                </Form.Item>
+              </Col>
+            </Row>
+            <Row gutter={16}>
+              <Col span={12}>
+                <Form.Item
+                  name="dob"
+                  label="Date of birth"
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Please enter date of birth',
+                    },
+                  ]}
+                >
+                  <Input
+                    placeholder="Enter date of birth"
+                    value={dob}
+                    onChange={(e) => setDob(e.target.value)}
+                  />
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item
+                  name="gender"
+                  label="Gender"
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Please enter gender',
+                    },
+                  ]}
+                >
+                  <Input
+                    placeholder="Enter gender"
+                    value={gender}
+                    onChange={(e) => setGender(e.target.value)}
+                  />
+                </Form.Item>
+              </Col>
+            </Row>
+            <Row gutter={16}>
+              <Col span={12}>
+                <Form.Item
+                  name="contact"
+                  label="Conatct"
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Please enter contact',
+                    },
+                  ]}
+                >
+                  <Input
+                    placeholder="Enter contact"
+                    value={lastname}
+                    onChange={(e) => setLastname(e.target.value)}
+                  />
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item
+                  name="email"
+                  label="Email"
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Please enter email',
+                    },
+                  ]}
+                >
+                  <Input
+                    placeholder="Enter email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
+                </Form.Item>
+              </Col>
+            </Row>
+            <Row gutter={16}>
+              <Col span={12}>
+                <Form.Item
+                  name="password"
+                  label="Password"
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Please enter password',
+                    },
+                  ]}
+                >
+                  <Input
+                    placeholder="Enter password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item
+                  name="status"
+                  label="Satatus"
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Please enter status',
+                    },
+                  ]}
+                >
+                  <Input
+                    placeholder="Enter status"
+                    value={status}
+                    onChange={(e) => setStatus(e.target.value)}
+                  />
+                </Form.Item>
+              </Col>
+            </Row>
+            <Row gutter={16}>
+              <Col span={24}>
+                <Form.Item
+                  name="role"
+                  label="Role"
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Please enter role',
+                    },
+                  ]}
+                >
+                  <Input
+                    placeholder="Enter role"
+                    value={role}
+                    onChange={(e) => setRole(e.target.value)}
+                  />
+                </Form.Item>
+              </Col>
+            </Row>
+            <Row gutter={16}>
+              <Col span={24}>
+                <Form.Item
+                  name="address"
+                  label="Address"
+                  rules={[
+                    {
+                      required: true,
+                      message: 'please enter address',
+                    },
+                  ]}
+                >
+                  <Input.TextArea
+                    rows={4}
+                    placeholder="Enter address"
+                    defaultValue={address}
+                    onChange={(e) => setAddress(e.target.value)}
+                  />
+                </Form.Item>
+              </Col>
+            </Row>
+          </Form>
+        </Drawer>
+
       </div>
+
+      
+
+
+      {/* Table */}
       <div className="m-4 bg-white rounded-xl p-4">
         <Table
           columns={columns}
-          dataSource={filterFactors} // Use filteredCrops instead of crops
+          dataSource={filterEmployees} // Use filteredCrops instead of crops
           scroll={{ x: 1500 }}
           pagination={{ pageSize: 10 }}
         />
       </div>
 
       {/* Update drawer */}
-      <Drawer
+      {/* <Drawer
         title="Update Crop Factors"
         width={720}
         onClose={updateOnClose}
@@ -1046,7 +1154,7 @@ function Employee() {
         </Form>
 
 
-      </Drawer>
+      </Drawer> */}
     </>
   );
 }

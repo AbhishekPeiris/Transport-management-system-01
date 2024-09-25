@@ -142,5 +142,23 @@ router.route('/deleteemloyee/:id').delete(async (req, res) => {
     }
 });
 
+router.route('/getemployee').post(async (req, res) => {
+
+    try {
+
+        const employee = await Employee.find();
+
+        if (!employee) {
+            return res.status(404).json({ status: "Employees not found" });
+        }
+
+        return res.status(200).json({ status: "Employees are fatched", employee });
+
+    } catch (error) {
+
+        return res.status(500).json({ status: "Error with fetch employees", message: error });
+
+    }
+});
 
 module.exports = router;

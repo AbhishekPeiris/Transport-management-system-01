@@ -60,5 +60,22 @@ router.route('/getduty').post(async (req, res) => {
     }
 });
 
+router.route('/getduty/:id').get(async (req, res) => {
+    const dutyId = req.params.id;
+
+    try {
+        // Use MongoDB's $in operator to check if the province is in the region array
+        const duties = await Duty.findOne({ _id: dutyId });
+
+        if (!duties) {
+            return res.status(404).json({ status: "Duties not found" });
+        }
+
+        return res.status(200).json({ status: "Duties is fetched", duties });
+
+    } catch (error) {
+        return res.status(500).json({ status: "Error with fetch duties", message: error });
+    }
+});
 
 module.exports = router;

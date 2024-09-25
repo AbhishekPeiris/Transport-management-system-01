@@ -44,5 +44,44 @@ router.route('/register').post(async (req, res) => {
 });
 
 
+router.route('/login').post(async (req, res) => {
+
+    const {
+        email,
+        password
+    } = req.body;
+
+    try {
+        const employee = await Employee.findOne({ email: email, password: password });
+
+        if (employee) {
+
+            const loginEmployee = {
+
+                _id: employee._id,
+                firstname: employee.firstname,
+                lastname: employee.lastname,
+                dob: employee.dob,
+                address: employee.address,
+                gender: employee.gender,
+                contact: employee.contact,
+                email: employee.email,
+                password: employee.password,
+                status: employee.status,
+                role: employee.role,
+
+            }
+
+            return res.status(200).json({ status: "Login Success", loginEmployee });
+        }
+        else {
+            return res.status(500).json({ status: "The email or password is incorrect" });
+        }
+
+    } catch (error) {
+        return res.status(500).json({ status: "Error during login", message: error });
+    }
+});
+
 
 module.exports = router;

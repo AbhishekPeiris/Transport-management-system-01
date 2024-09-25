@@ -126,5 +126,21 @@ router.route('/editemployee/:id').put(async (req, res) => {
     }
 });
 
+router.route('/deleteemloyee/:id').delete(async (req, res) => {
+
+    const employeeId = req.params.id;
+
+    try {
+
+        await Employee.findByIdAndDelete(employeeId);
+        return res.status(200).json({ status: "Employee is deleted" });
+
+    } catch (error) {
+
+        return res.status(400).json({ status: "Error with delete employee", message: error });
+
+    }
+});
+
 
 module.exports = router;

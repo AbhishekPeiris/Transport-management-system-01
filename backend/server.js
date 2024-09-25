@@ -24,5 +24,13 @@ connection.once('open', () => {
     console.log('MongoDB connection successfully');
 });
 
+const EmployeeRoute = require('./routes/EmployeeRoute');
+const DutyRoute = require('./routes/DutyRoute');
+
+
+
+app.use('/api/employee', EmployeeRoute);
+app.use('/api/duty', DutyRoute);
+
 
 

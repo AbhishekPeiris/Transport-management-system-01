@@ -119,4 +119,21 @@ router.route('/editduty/:id').put(async (req, res) => {
     }
 });
 
+router.route('/deleteduty/:id').delete(async (req, res) => {
+
+    const dutyId = req.params.id;
+
+    try {
+
+        await Duty.findByIdAndDelete(dutyId);
+        return res.status(200).json({ status: "Duty is deleted" });
+
+    } catch (error) {
+
+        return res.status(400).json({ status: "Error with delete duty", message: error });
+
+    }
+});
+
+
 module.exports = router;

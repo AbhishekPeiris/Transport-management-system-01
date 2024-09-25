@@ -41,7 +41,24 @@ router.route('/addduty').post(async (req, res) => {
     }
 });
 
+router.route('/getduty').post(async (req, res) => {
 
+    try {
+
+        const duties = await Duty.find();
+
+        if (!duties) {
+            return res.status(404).json({ status: "Duties not found" });
+        }
+
+        return res.status(200).json({ status: "Duties are fatched", duties });
+
+    } catch (error) {
+
+        return res.status(500).json({ status: "Error with fetch duties", message: error });
+
+    }
+});
 
 
 module.exports = router;

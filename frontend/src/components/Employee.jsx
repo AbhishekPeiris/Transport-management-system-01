@@ -14,27 +14,55 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     backgroundColor: '#FFFFFF'
   },
+  header: {
+    margin: 10,
+    padding: 10,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  headerText: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#0c883d'
+  },
+  logo: {
+    width: 100,
+    height: 50,
+  },
   section: {
     margin: 10,
     padding: 10,
+  },
+  title: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: 20,
+    color: '#000000'
   },
   table: {
     display: "table",
     width: "auto",
     borderStyle: "solid",
-    borderColor: "#bfbfbf",
+    borderColor: "#EEEEEE",
     borderWidth: 1,
     borderRightWidth: 0,
-    borderBottomWidth: 0
+    borderBottomWidth: 0,
   },
   tableRow: {
     margin: "auto",
-    flexDirection: "row"
+    flexDirection: "row",
+    backgroundColor: '#FFFFFF',
+  },
+  tableHeader: {
+    backgroundColor: '#e7ffe7',
+    color: '#FFFFFF',
   },
   tableCol: {
-    width: "25%",
+    width: "100px",
     borderStyle: "solid",
-    borderColor: "#bfbfbf",
+    borderColor: "#EEEEEE",
     borderWidth: 1,
     borderLeftWidth: 0,
     borderTopWidth: 0
@@ -42,14 +70,25 @@ const styles = StyleSheet.create({
   tableCell: {
     margin: "auto",
     marginTop: 5,
-    fontSize: 10
-  }
+    marginBottom: 5,
+    fontSize: 10,
+    color: '#333333',
+  },
+  footer: {
+    position: 'absolute',
+    bottom: 30,
+    left: 0,
+    right: 0,
+    textAlign: 'center',
+    color: '#888888',
+    fontSize: 10,
+  },
 });
 
 // Define the PDF Document component
 const MyDocument = ({ employees }) => (
   <Document>
-    <Page size="A4" style={styles.page}>
+    <Page size="A3" style={styles.page}>
       <View style={styles.section}>
         <Text>Employee List</Text>
         <View style={styles.table}>
@@ -57,6 +96,18 @@ const MyDocument = ({ employees }) => (
           <View style={styles.tableRow}>
             <View style={styles.tableCol}>
               <Text style={styles.tableCell}>Name</Text>
+            </View>
+            <View style={styles.tableCol}>
+              <Text style={styles.tableCell}>DOB</Text>
+            </View>
+            <View style={styles.tableCol}>
+              <Text style={styles.tableCell}>Address</Text>
+            </View>
+            <View style={styles.tableCol}>
+              <Text style={styles.tableCell}>Gender</Text>
+            </View>
+            <View style={styles.tableCol}>
+              <Text style={styles.tableCell}>Contact</Text>
             </View>
             <View style={styles.tableCol}>
               <Text style={styles.tableCell}>Email</Text>
@@ -73,6 +124,18 @@ const MyDocument = ({ employees }) => (
             <View style={styles.tableRow} key={employee._id}>
               <View style={styles.tableCol}>
                 <Text style={styles.tableCell}>{`${employee.firstname} ${employee.lastname}`}</Text>
+              </View>
+              <View style={styles.tableCol}>
+                <Text style={styles.tableCell}>{employee.dob}</Text>
+              </View>
+              <View style={styles.tableCol}>
+                <Text style={styles.tableCell}>{employee.address}</Text>
+              </View>
+              <View style={styles.tableCol}>
+                <Text style={styles.tableCell}>{employee.gender}</Text>
+              </View>
+              <View style={styles.tableCol}>
+                <Text style={styles.tableCell}>{employee.contact}</Text>
               </View>
               <View style={styles.tableCol}>
                 <Text style={styles.tableCell}>{employee.email}</Text>

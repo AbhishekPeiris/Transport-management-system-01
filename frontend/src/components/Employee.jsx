@@ -164,11 +164,16 @@ function Employee() {
   // Search Filter
   const [filterEmployees, setFilterEmployees] = useState([]);
   const [selectedRole, setSelectedRole] = useState(null);
-  const [selectedSatus, setSelectedSelectedSatus] = useState(null);
+  const [selectedStatus, setSelectedStatus] = useState(null);
 
   // Create
-  const [openAddEmployee, setOpenEmployee] = useState(false);
+  const [openAddEmployee, setOpenAddEmployee] = useState(false);
   const [form] = Form.useForm();
+
+  // Update
+  const [selectedEmployee, setSelectedEmployee] = useState(null);
+  const [updateOpen, setUpdateOpen] = useState(false);
+  const [updateForm] = Form.useForm();
 
   // Read
   useEffect(() => {
@@ -200,12 +205,16 @@ function Employee() {
     messageApi.error('Failed to add employee. Please try again.');
   };
 
+  const addWarning = (warningMessage) => {
+    messageApi.warning(warningMessage);
+  };
+
   const showDrawer = () => {
-    setOpenEmployee(true);
+    setOpenAddEmployee(true);
   };
 
   const onClose = () => {
-    setOpenEmployee(false);
+    setOpenAddEmployee(false);
     form.resetFields();
   };
 
@@ -228,18 +237,19 @@ function Employee() {
     }
   }
 
-
   // Delete
   async function deleteEmployee(id) {
     try {
       const response = await axios.delete(`http://localhost:5000/api/employee/deleteemloyee/${id}`);
       messageApi.success('Employee deleted successfully!');
-      setEmployees((prevEmployees) => prevEmployees.filter(employees => employees._id !== id));
+      setEmployees((prevEmployees) => prevEmployees.filter(employee => employee._id !== id));
+      setFilterEmployees((prevEmployees) => prevEmployees.filter(employee => employee._id !== id));
     } catch (error) {
       console.log(error);
       messageApi.error('Failed to delete employee. Please try again.');
     }
   }
+
 
   // Table
   const columns = [
@@ -309,10 +319,10 @@ function Employee() {
       key: 'action',
       render: (_, record) => (
         <Space size="middle">
-          <Button size="large" className='bg-[#379237] text-white'>Update</Button>
+          <Button size="large" className='bg-[#379237] text-white' onClick={() => updateShowDrawer(record)}>Update</Button>
           <Popconfirm
-            title="Delete the crop"
-            description="Are you sure to delete this crop?"
+            title="Delete the employee"
+            description="Are you sure to delete this employee?"
             onConfirm={() => deleteEmployee(record._id)}
             onCancel={() => messageApi.info('Cancelled')}
             okText="Yes"
@@ -328,28 +338,26 @@ function Employee() {
   // Search Filter
   useEffect(() => {
     filterEmployee();
-  }, [selectedRole, selectedSatus, employees]);
+  }, [selectedRole, selectedStatus, employees]);
 
   const filterEmployee = () => {
     let filtered = [...employees];
 
     if (selectedRole && selectedRole !== 'All') {
-      filtered = filtered.filter(employees => employees.role === selectedRole);
+      filtered = filtered.filter(employee => employee.role === selectedRole);
     }
 
-    if (selectedSatus && selectedSatus !== 'All') {
-      filtered = filtered.filter(employees => employees.status === selectedSatus);
+    if (selectedStatus && selectedStatus !== 'All') {
+      filtered = filtered.filter(employee => employee.status === selectedStatus);
     }
-
 
     setFilterEmployees(filtered);
   };
 
-
   const onSearch = (value) => {
     const lowercasedValue = value.toLowerCase();
-    const filtered = employees.filter(employees =>
-      employees._id.toLowerCase().includes(lowercasedValue)
+    const filtered = employees.filter(employee =>
+      employee._id.toLowerCase().includes(lowercasedValue)
     );
     setFilterEmployees(filtered);
   };
@@ -358,10 +366,60 @@ function Employee() {
     setSelectedRole(value);
   };
 
-  const handleSatatusChange = (value) => {
-    setSelectedSelectedSatus(value);
+  const handleStatusChange = (value) => {
+    setSelectedStatus(value);
   };
 
+  // Update
+  const updateShowDrawer = (employee) => {
+    setSelectedEmployee(employee);
+    setUpdateOpen(true);
+
+    updateForm.setFieldsValue({
+      firstname: employee.firstname,
+      lastname: employee.lastname,
+      dob: employee.dob,
+      address: employee.address,
+      gender: employee.gender,
+      contact: employee.contact,
+      email: employee.email,
+      password: employee.password,
+      status: employee.status,
+      role: employee.role,
+    });
+  };
+
+  const handleUpdateEmployee = async () => {
+    try {
+      const values = await updateForm.validateFields();
+
+      if (Object.values(values).some(value => value === undefined || value === '')) {
+        addWarning('Please fill in all required fields.');
+        return;
+      }
+
+      const updatedEmployee = {
+        ...selectedEmployee,
+        ...values,
+      };
+
+      const response = await axios.put(`http://localhost:5000/api/employee/editemployee/${selectedEmployee._id}`, updatedEmployee);
+
+      if (response.status === 200) {
+        messageApi.success('Employee updated successfully!');
+        setUpdateOpen(false);
+        fetchEmployees();
+      }
+    } catch (error) {
+      console.error(error);
+      messageApi.error('Failed to update employee. Please try again.');
+    }
+  };
+
+  const updateOnClose = () => {
+    setUpdateOpen(false);
+    updateForm.resetFields();
+  };
   return (
     <>
       {contextHolder}
@@ -403,7 +461,7 @@ function Employee() {
               height: '40px',
             }}
             size='large'
-            onChange={handleSatatusChange}
+            onChange={handleStatusChange}
             defaultValue="All"
           >
             <Option value="All">Employee Status -- All</Option>
@@ -468,6 +526,136 @@ function Employee() {
         }
       >
         <Form form={form} layout="vertical">
+          <Row gutter={16}>
+            <Col span={12}>
+              <Form.Item
+                name="firstname"
+                label="First name"
+                rules={[{ required: true, message: 'Please enter first name' }]}
+              >
+                <Input placeholder="Enter first name" />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item
+                name="lastname"
+                label="Last name"
+                rules={[{ required: true, message: 'Please enter last name' }]}
+              >
+                <Input placeholder="Enter last name" />
+              </Form.Item>
+            </Col>
+          </Row>
+          <Row gutter={16}>
+            <Col span={12}>
+              <Form.Item
+                name="dob"
+                label="Date of birth"
+                rules={[{ required: true, message: 'Please enter date of birth' }]}
+              >
+                <Input placeholder="YYYY-MM-DD" />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item
+                name="gender"
+                label="Gender"
+                rules={[{ required: true, message: 'Please select gender' }]}
+              >
+                <Select placeholder="Select gender">
+                  <Option value="male">Male</Option>
+                  <Option value="female">Female</Option>
+                  <Option value="other">Other</Option>
+                </Select>
+              </Form.Item>
+            </Col>
+          </Row>
+          <Form.Item
+            name="address"
+            label="Address"
+            rules={[{ required: true, message: 'Please enter address' }]}
+          >
+            <Input.TextArea rows={4} placeholder="Enter address" />
+          </Form.Item>
+          <Row gutter={16}>
+            <Col span={12}>
+              <Form.Item
+                name="contact"
+                label="Contact"
+                rules={[{ required: true, message: 'Please enter contact number' }]}
+              >
+                <Input placeholder="Enter contact number" />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item
+                name="email"
+                label="Email"
+                rules={[
+                  { required: true, message: 'Please enter email' },
+                  { type: 'email', message: 'Please enter a valid email' }
+                ]}
+              >
+                <Input placeholder="Enter email" />
+              </Form.Item>
+            </Col>
+          </Row>
+          <Row gutter={16}>
+            <Col span={12}>
+              <Form.Item
+                name="password"
+                label="Password"
+                rules={[{ required: true, message: 'Please enter password' }]}
+              >
+                <Input.Password placeholder="Enter password" />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item
+                name="status"
+                label="Status"
+                rules={[{ required: true, message: 'Please select status' }]}
+              >
+                <Select placeholder="Select status">
+                  <Option value="Active">Active</Option>
+                  <Option value="Inactive">Inactive</Option>
+                  <Option value="Suspended">Suspended</Option>
+                </Select>
+              </Form.Item>
+            </Col>
+          </Row>
+          <Form.Item
+            name="role"
+            label="Role"
+            rules={[{ required: true, message: 'Please select role' }]}
+          >
+            <Select placeholder="Select role">
+              <Option value="Driver">Driver</Option>
+              <Option value="Admin">Admin</Option>
+              <Option value="Supervisor">Supervisor</Option>
+              <Option value="Mechanic">Mechanic</Option>
+              <Option value="Other">Other</Option>
+            </Select>
+          </Form.Item>
+        </Form>
+      </Drawer>
+
+      {/* Update */}
+      <Drawer
+        title="Edit Employee"
+        width={720}
+        onClose={updateOnClose}
+        open={updateOpen}
+        extra={
+          <Space>
+            <Button onClick={updateOnClose}>Cancel</Button>
+            <Button onClick={handleUpdateEmployee} type="primary" className='bg-[black]'>
+              Update
+            </Button>
+          </Space>
+        }
+      >
+        <Form form={updateForm} layout="vertical" hideRequiredMark>
           <Row gutter={16}>
             <Col span={12}>
               <Form.Item

@@ -6,6 +6,7 @@ import '../styles/table.css';
 import axios from "axios";
 import { Document, Page, Text, View, StyleSheet, PDFDownloadLink } from '@react-pdf/renderer';
 
+const { Search } = Input;
 const { Option } = Select;
 
 // Define styles for PDF
@@ -156,11 +157,15 @@ const MyDocument = ({ employees }) => (
 
 function Employee() {
   const [messageApi, contextHolder] = message.useMessage();
-  
+
   // Read
   const [employees, setEmployees] = useState([]);
+
+  // Search Filter
   const [filterEmployees, setFilterEmployees] = useState([]);
-  
+  const [selectedRole, setSelectedRole] = useState(null);
+  const [selectedSatus, setSelectedSelectedSatus] = useState(null);
+
   // Create
   const [openAddEmployee, setOpenEmployee] = useState(false);
   const [form] = Form.useForm();
@@ -178,6 +183,7 @@ function Employee() {
         key: employee._id,
       }));
       setEmployees(employeesWithKeys);
+      setFilterEmployees(employeesWithKeys);
     } catch (error) {
       console.error("Error fetching employees:", error);
       messageApi.error('Failed to fetch employees');
@@ -234,8 +240,8 @@ function Employee() {
       messageApi.error('Failed to delete employee. Please try again.');
     }
   }
-  
-// Table
+
+  // Table
   const columns = [
     {
       title: 'Employee ID',
@@ -319,16 +325,96 @@ function Employee() {
     },
   ];
 
+  // Search Filter
+  useEffect(() => {
+    filterEmployee();
+  }, [selectedRole, selectedSatus, employees]);
+
+  const filterEmployee = () => {
+    let filtered = [...employees];
+
+    if (selectedRole && selectedRole !== 'All') {
+      filtered = filtered.filter(employees => employees.role === selectedRole);
+    }
+
+    if (selectedSatus && selectedSatus !== 'All') {
+      filtered = filtered.filter(employees => employees.status === selectedSatus);
+    }
+
+
+    setFilterEmployees(filtered);
+  };
+
+
+  const onSearch = (value) => {
+    const lowercasedValue = value.toLowerCase();
+    const filtered = employees.filter(employees =>
+      employees._id.toLowerCase().includes(lowercasedValue)
+    );
+    setFilterEmployees(filtered);
+  };
+
+  const handleRoleChange = (value) => {
+    setSelectedRole(value);
+  };
+
+  const handleSatatusChange = (value) => {
+    setSelectedSelectedSatus(value);
+  };
+
   return (
     <>
       {contextHolder}
       <div className="flex justify-between items-center h-[74px] bg-white rounded-[11px] m-[15px] px-[15px]">
-        <div className="text-slate-900 text-xl font-semibold font-['Poppins']">Employees</div>
+        <div className="text-slate-900 text-xl font-semibold font-['Poppins']">Employees&nbsp;&nbsp;</div>
         <Space>
+
+          {/* Search Filter */}
+          <Search
+            placeholder="Search by Employee ID"
+            onSearch={onSearch}
+            style={{
+              width: '250px',
+              height: '40px',
+            }}
+            size='large'
+          />
+          <Select
+            placeholder="Select Employee Role"
+            style={{
+              width: '200px',
+              height: '40px',
+            }}
+            size='large'
+            onChange={handleRoleChange}
+            defaultValue="All"
+          >
+            <Option value="All">Employee Role -- All</Option>
+            <Option value="Driver">Driver</Option>
+            <Option value="Admin">Admin</Option>
+            <Option value="Supervisor">Supervisor</Option>
+            <Option value="Mechanic">Mechanic</Option>
+            <Option value="Other">Other</Option>
+          </Select>
+          <Select
+            placeholder="Select Employee Status"
+            style={{
+              width: '200px',
+              height: '40px',
+            }}
+            size='large'
+            onChange={handleSatatusChange}
+            defaultValue="All"
+          >
+            <Option value="All">Employee Status -- All</Option>
+            <Option value="Active">Active</Option>
+            <Option value="Inactive">Inactive</Option>
+            <Option value="Suspended">Suspended</Option>
+          </Select>
 
           {/* PDF */}
           <PDFDownloadLink
-            document={<MyDocument employees={employees} />}
+            document={<MyDocument employees={filterEmployees} />}
             fileName="employees.pdf"
           >
             {({ blob, url, loading, error }) =>
@@ -341,6 +427,8 @@ function Employee() {
               )
             }
           </PDFDownloadLink>
+
+
 
           {/* Create */}
           <Button
@@ -358,7 +446,7 @@ function Employee() {
       <div className="p-4 m-4 bg-white rounded-xl">
         <Table
           columns={columns}
-          dataSource={employees}
+          dataSource={filterEmployees}
           scroll={{ x: 1000 }}
           pagination={{ pageSize: 10 }}
         />

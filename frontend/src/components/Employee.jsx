@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { DownloadOutlined } from '@ant-design/icons';
-import { Input, Button, Space, Table, Drawer, Form, Row, Col, Select, message } from 'antd';
+import { Input, Button, Space, Table, Drawer, Form, Row, Col, Select, message, Popconfirm } from 'antd';
 import { Icon } from "@iconify/react";
 import '../styles/table.css';
 import axios from "axios";
@@ -152,6 +152,19 @@ function Employee() {
     }
   }
 
+
+  async function deleteEmployee(id) {
+    try {
+      const response = await axios.delete(`http://localhost:5000/api/employee/deleteemloyee/${id}`);
+      messageApi.success('Employee deleted successfully!');
+      setEmployees((prevEmployees) => prevEmployees.filter(employees => employees._id !== id));
+    } catch (error) {
+      console.log(error);
+      messageApi.error('Failed to delete employee. Please try again.');
+    }
+  }
+  
+
   const columns = [
     {
       title: 'Employee ID',
@@ -219,13 +232,17 @@ function Employee() {
       key: 'action',
       render: (_, record) => (
         <Space size="middle">
-          <Icon icon="uil:setting"
-
-            style={{
-              fontSize: '20px',
-              color: "#bfbfbf"
-            }}
-          />
+          <Button size="large" className='bg-[#379237] text-white'>Update</Button>
+          <Popconfirm
+            title="Delete the crop"
+            description="Are you sure to delete this crop?"
+            onConfirm={() => deleteEmployee(record._id)}
+            onCancel={() => messageApi.info('Cancelled')}
+            okText="Yes"
+            cancelText="No"
+          >
+            <Button size="large" className='text-white bg-red-600'>Delete</Button>
+          </Popconfirm>
         </Space>
       ),
     },

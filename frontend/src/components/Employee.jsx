@@ -156,10 +156,16 @@ const MyDocument = ({ employees }) => (
 
 function Employee() {
   const [messageApi, contextHolder] = message.useMessage();
+  
+  // Read
   const [employees, setEmployees] = useState([]);
+  const [filterEmployees, setFilterEmployees] = useState([]);
+  
+  // Create
   const [openAddEmployee, setOpenEmployee] = useState(false);
   const [form] = Form.useForm();
 
+  // Read
   useEffect(() => {
     fetchEmployees();
   }, []);
@@ -178,6 +184,7 @@ function Employee() {
     }
   };
 
+  // Create
   const addSuccess = () => {
     messageApi.success('Employee added successfully!');
     fetchEmployees();
@@ -216,6 +223,7 @@ function Employee() {
   }
 
 
+  // Delete
   async function deleteEmployee(id) {
     try {
       const response = await axios.delete(`http://localhost:5000/api/employee/deleteemloyee/${id}`);
@@ -227,7 +235,7 @@ function Employee() {
     }
   }
   
-
+// Table
   const columns = [
     {
       title: 'Employee ID',
@@ -317,6 +325,8 @@ function Employee() {
       <div className="flex justify-between items-center h-[74px] bg-white rounded-[11px] m-[15px] px-[15px]">
         <div className="text-slate-900 text-xl font-semibold font-['Poppins']">Employees</div>
         <Space>
+
+          {/* PDF */}
           <PDFDownloadLink
             document={<MyDocument employees={employees} />}
             fileName="employees.pdf"
@@ -331,6 +341,8 @@ function Employee() {
               )
             }
           </PDFDownloadLink>
+
+          {/* Create */}
           <Button
             type="primary"
             icon={<Icon icon="ic:baseline-plus" />}
@@ -352,6 +364,7 @@ function Employee() {
         />
       </div>
 
+      {/* Create */}
       <Drawer
         title="Add Employee"
         width={720}

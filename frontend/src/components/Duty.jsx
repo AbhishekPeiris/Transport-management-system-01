@@ -252,15 +252,15 @@ function Duty() {
   }
 
   // Delete
-  async function deleteEmployee(id) {
+  async function deleteDuty(id) {
     try {
-      const response = await axios.delete(`http://localhost:5000/api/employee/deleteemloyee/${id}`);
-      messageApi.success('Employee deleted successfully!');
-      setDuties((prevEmployees) => prevEmployees.filter(employee => employee._id !== id));
-      setFilterDuties((prevEmployees) => prevEmployees.filter(employee => employee._id !== id));
+      const response = await axios.delete(`http://localhost:5000/api/duty/deleteduty/${id}`);
+      messageApi.success('Duty deleted successfully!');
+      setDuties((prevDuty) => prevDuty.filter(duties => duties._id !== id));
+      setFilterDuties((prevDuty) => prevDuty.filter(duties => duties._id !== id));
     } catch (error) {
       console.log(error);
-      messageApi.error('Failed to delete employee. Please try again.');
+      messageApi.error('Failed to delete duty. Please try again.');
     }
   }
 
@@ -335,9 +335,9 @@ function Duty() {
         <Space size="middle">
           <Button size="large" className='bg-[#379237] text-white' onClick={() => updateShowDrawer(record)}>Update</Button>
           <Popconfirm
-            title="Delete the employee"
-            description="Are you sure to delete this employee?"
-            onConfirm={() => deleteEmployee(record._id)}
+            title="Delete the duty"
+            description="Are you sure to delete this duty?"
+            onConfirm={() => deleteDuty(record._id)}
             onCancel={() => messageApi.info('Cancelled')}
             okText="Yes"
             cancelText="No"

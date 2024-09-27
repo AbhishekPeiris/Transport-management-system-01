@@ -5,11 +5,13 @@ import DashBoard from "./components/DashBoard";
 import Employee from "./components/Employee";
 import Duty from "./components/Duty";
 import { NavBar, SideBar as ImportedSideMenu } from "./components";
+import Login from "./pages/Auth/Login";
+import SignUp from "./pages/Auth/Signup";
 
 
 function MainLayout() {
   return (
-    <div className="App w-screen h-screen overflow-x-hidden">
+    <div className="w-screen h-screen overflow-x-hidden App">
       <div className="flex flex-1 justify-start items-start bg-[#f5faff]">
         <div className="fixed">
           <ImportedSideMenu />
@@ -33,6 +35,8 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
+        <Route path="/" element={<Login />} />
+        <Route path="/signup" element={<SignUp />} />
         <Route path="/*" element={<MainLayout />} />
       </Routes>
     </BrowserRouter>

@@ -5,11 +5,13 @@ import { useNavigate } from "react-router-dom";
 
 function NavBar() {
     const [loggedUser, setLoggedUser] = useState(null);
+    const [name, setName] = useState("");
     const navigate = useNavigate();
 
     useEffect(() => {
         const user = JSON.parse(localStorage.getItem("currentUser"));
         setLoggedUser(user);
+        setName(user.loginEmployee.firstname + " " + user.loginEmployee.lastname);
     }, []);
 
     const handleLogout = () => {
@@ -82,7 +84,7 @@ function NavBar() {
                     menu={{ items }}
                     trigger={["click"]}
                     overlay={
-                        <div className="bg-white p-4 rounded shadow-md">
+                        <div className="p-4 bg-white rounded shadow-md">
                             <p><strong>Name:</strong> {loggedUser?.name || 'Not available'}</p>
                             <p><strong>Email:</strong> {loggedUser?.email || 'Not available'}</p>
                             {/* Add more user details as needed */}
@@ -90,7 +92,7 @@ function NavBar() {
                     }
                 >
                     <Space>
-                        <span style={{color:"white"}}>{loggedUser?.name || "Guest"}</span>
+                        <span style={{ color: "white" }}>{name}</span>
                         <Avatar
                             size="large"
                             icon={<Icon icon="mdi:user" style={{ fontSize: "24px" }} />}

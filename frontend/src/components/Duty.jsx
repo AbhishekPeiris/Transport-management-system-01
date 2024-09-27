@@ -131,7 +131,7 @@ const MyDocument = ({ duties }) => (
           {duties.map((duty) => (
             <View style={styles.tableRow} key={duty._id}>
               <View style={styles.tableCol}>
-                <Text style={styles.tableCell}>{duty._id}</Text>
+                <Text style={styles.tableCell}>{duty.did}</Text>
               </View>
               <View style={styles.tableCol}>
                 <Text style={styles.tableCell}>{duty.employeeId}</Text>
@@ -269,8 +269,8 @@ function Duty() {
   const columns = [
     {
       title: 'Duty ID',
-      dataIndex: '_id',
-      key: '_id',
+      dataIndex: 'did',
+      key: 'did',
       className: 'px-4',
     },
     {
@@ -371,7 +371,7 @@ function Duty() {
   const onSearch = (value) => {
     const lowercasedValue = value.toLowerCase();
     const filtered = duties.filter(duties =>
-      duties._id.toLowerCase().includes(lowercasedValue)
+      duties.did.toLowerCase().includes(lowercasedValue)
     );
     setFilterDuties(filtered);
   };
@@ -390,6 +390,7 @@ function Duty() {
     setUpdateOpen(true);
 
     updateForm.setFieldsValue({
+      did: duties.did,
       employeeId: duties.employeeId,
       dutyDate: moment(duties.dob, 'YYYY-MM-DD'),
       vehicleId: duties.vehicleId,
@@ -537,6 +538,13 @@ function Duty() {
         }
       >
         <Form form={form} layout="vertical">
+          <Form.Item
+            name="did"
+            label="Duty Id"
+            rules={[{ required: true, message: 'Please enter duty id' }]}
+          >
+            <Input placeholder="Enter Duty Id" />
+          </Form.Item>
           <Row gutter={16}>
             <Col span={12}>
               <Form.Item
@@ -653,6 +661,13 @@ function Duty() {
         }
       >
         <Form form={updateForm} layout="vertical" hideRequiredMark>
+          <Form.Item
+            name="did"
+            label="Duty Id"
+            rules={[{ required: true, message: 'Please enter duty id' }]}
+          >
+            <Input placeholder="Enter Duty Id" />
+          </Form.Item>
           <Row gutter={16}>
             <Col span={12}>
               <Form.Item

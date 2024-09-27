@@ -4,6 +4,10 @@ const Schema = mongoose.Schema;
 
 const employeeSchema = new Schema({
 
+    eid: {
+        type: String,
+        required: true
+    },
     firstname : {
         type : String,
         required : true

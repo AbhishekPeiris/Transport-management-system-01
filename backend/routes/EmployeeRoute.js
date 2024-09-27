@@ -5,6 +5,7 @@ const Employee = require('../models/Employee');
 router.route('/register').post(async (req, res) => {
 
     const {
+        eid,
         firstname,
         lastname,
         dob,
@@ -18,7 +19,7 @@ router.route('/register').post(async (req, res) => {
     } = req.body;
 
     const newEmployee = new Employee({
-
+        eid,
         firstname,
         lastname,
         dob,
@@ -59,6 +60,7 @@ router.route('/login').post(async (req, res) => {
             const loginEmployee = {
 
                 _id: employee._id,
+                eid: employee.eid,
                 firstname: employee.firstname,
                 lastname: employee.lastname,
                 dob: employee.dob,
@@ -88,6 +90,7 @@ router.route('/editemployee/:id').put(async (req, res) => {
     const employeeId = req.params.id;
 
     const {
+        eid,
         firstname,
         lastname,
         dob,
@@ -102,6 +105,7 @@ router.route('/editemployee/:id').put(async (req, res) => {
 
     const updateEmployee = {
 
+        eid,
         firstname,
         lastname,
         dob,

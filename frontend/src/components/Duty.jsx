@@ -164,7 +164,7 @@ function Duty() {
 
   // Search Filter
   const [filterDuties, setFilterDuties] = useState([]);
-  const [selectedRole, setSelectedRole] = useState(null);
+  const [selectedShift, setSelectedShift] = useState(null);
   const [selectedStatus, setSelectedStatus] = useState(null);
 
   // Create
@@ -339,18 +339,18 @@ function Duty() {
 
   // Search Filter
   useEffect(() => {
-    filterEmployee();
-  }, [selectedRole, selectedStatus, duties]);
+    filterDuty();
+  }, [selectedShift, selectedStatus, duties]);
 
-  const filterEmployee = () => {
+  const filterDuty = () => {
     let filtered = [...duties];
 
-    if (selectedRole && selectedRole !== 'All') {
-      filtered = filtered.filter(employee => employee.role === selectedRole);
+    if (selectedShift && selectedShift !== 'All') {
+      filtered = filtered.filter(duties => duties.shift === selectedShift);
     }
 
     if (selectedStatus && selectedStatus !== 'All') {
-      filtered = filtered.filter(employee => employee.status === selectedStatus);
+      filtered = filtered.filter(duties => duties.dutyStatus === selectedStatus);
     }
 
     setFilterDuties(filtered);
@@ -358,14 +358,14 @@ function Duty() {
 
   const onSearch = (value) => {
     const lowercasedValue = value.toLowerCase();
-    const filtered = duties.filter(employee =>
-      employee._id.toLowerCase().includes(lowercasedValue)
+    const filtered = duties.filter(duties =>
+      duties._id.toLowerCase().includes(lowercasedValue)
     );
     setFilterDuties(filtered);
   };
 
   const handleRoleChange = (value) => {
-    setSelectedRole(value);
+    setSelectedShift(value);
   };
 
   const handleStatusChange = (value) => {
@@ -431,7 +431,7 @@ function Duty() {
 
           {/* Search Filter */}
           <Search
-            placeholder="Search by Employee ID"
+            placeholder="Search by Duty ID"
             onSearch={onSearch}
             style={{
               width: '250px',
@@ -440,7 +440,7 @@ function Duty() {
             size='large'
           />
           <Select
-            placeholder="Select Employee Role"
+            placeholder="Select Duty Shift"
             style={{
               width: '200px',
               height: '40px',
@@ -449,15 +449,13 @@ function Duty() {
             onChange={handleRoleChange}
             defaultValue="All"
           >
-            <Option value="All">Employee Role -- All</Option>
-            <Option value="Driver">Driver</Option>
-            <Option value="Admin">Admin</Option>
-            <Option value="Supervisor">Supervisor</Option>
-            <Option value="Mechanic">Mechanic</Option>
-            <Option value="Other">Other</Option>
+            <Option value="All">Duty Shift -- All</Option>
+            <Option value="Morning">Morning</Option>
+            <Option value="Afternoon">Afternoon</Option>
+            <Option value="Night">Night</Option>
           </Select>
           <Select
-            placeholder="Select Employee Status"
+            placeholder="Select Duty Status"
             style={{
               width: '200px',
               height: '40px',
@@ -466,10 +464,10 @@ function Duty() {
             onChange={handleStatusChange}
             defaultValue="All"
           >
-            <Option value="All">Employee Status -- All</Option>
-            <Option value="Active">Active</Option>
-            <Option value="Inactive">Inactive</Option>
-            <Option value="Suspended">Suspended</Option>
+            <Option value="All">Duty Status -- All</Option>
+            <Option value="Pending">Pending</Option>
+            <Option value="In Progress">In Progress</Option>
+            <Option value="Completed">Completed</Option>
           </Select>
 
           {/* PDF */}

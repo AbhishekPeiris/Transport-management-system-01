@@ -184,7 +184,7 @@ function Duty() {
   const [form] = Form.useForm();
 
   // Update
-  const [selectedEmployee, setSelectedEmployee] = useState(null);
+  const [selectedDuty, setSelectedDuty] = useState(null);
   const [updateOpen, setUpdateOpen] = useState(false);
   const [updateForm] = Form.useForm();
 
@@ -252,15 +252,15 @@ function Duty() {
   }
 
   // Delete
-  async function deleteEmployee(id) {
+  async function deleteDuty(id) {
     try {
-      const response = await axios.delete(`http://localhost:5000/api/employee/deleteemloyee/${id}`);
-      messageApi.success('Employee deleted successfully!');
-      setDuties((prevEmployees) => prevEmployees.filter(employee => employee._id !== id));
-      setFilterDuties((prevEmployees) => prevEmployees.filter(employee => employee._id !== id));
+      const response = await axios.delete(`http://localhost:5000/api/duty/deleteduty/${id}`);
+      messageApi.success('Duty deleted successfully!');
+      setDuties((prevDuty) => prevDuty.filter(duties => duties._id !== id));
+      setFilterDuties((prevDuty) => prevDuty.filter(duties => duties._id !== id));
     } catch (error) {
       console.log(error);
-      messageApi.error('Failed to delete employee. Please try again.');
+      messageApi.error('Failed to delete duty. Please try again.');
     }
   }
 
@@ -335,9 +335,9 @@ function Duty() {
         <Space size="middle">
           <Button size="large" className='bg-[#379237] text-white' onClick={() => updateShowDrawer(record)}>Update</Button>
           <Popconfirm
-            title="Delete the employee"
-            description="Are you sure to delete this employee?"
-            onConfirm={() => deleteEmployee(record._id)}
+            title="Delete the duty"
+            description="Are you sure to delete this duty?"
+            onConfirm={() => deleteDuty(record._id)}
             onCancel={() => messageApi.info('Cancelled')}
             okText="Yes"
             cancelText="No"
@@ -385,25 +385,24 @@ function Duty() {
   };
 
   // Update
-  const updateShowDrawer = (employee) => {
-    setSelectedEmployee(employee);
+  const updateShowDrawer = (duties) => {
+    setSelectedDuty(duties);
     setUpdateOpen(true);
 
     updateForm.setFieldsValue({
-      firstname: employee.firstname,
-      lastname: employee.lastname,
-      dob: employee.dob,
-      address: employee.address,
-      gender: employee.gender,
-      contact: employee.contact,
-      email: employee.email,
-      password: employee.password,
-      status: employee.status,
-      role: employee.role,
+      employeeId: duties.employeeId,
+      dutyDate: moment(duties.dob, 'YYYY-MM-DD'),
+      vehicleId: duties.vehicleId,
+      startLocation: duties.startLocation,
+      endLocation: duties.endLocation,
+      distance: duties.distance,
+      dutyStatus: duties.dutyStatus,
+      shift: duties.shift,
+      notes: duties.notes,
     });
   };
 
-  const handleUpdateEmployee = async () => {
+  const handleUpdateDuty = async () => {
     try {
       const values = await updateForm.validateFields();
 
@@ -412,21 +411,21 @@ function Duty() {
         return;
       }
 
-      const updatedEmployee = {
-        ...selectedEmployee,
+      const updatedDuty = {
+        ...selectedDuty,
         ...values,
       };
 
-      const response = await axios.put(`http://localhost:5000/api/employee/editemployee/${selectedEmployee._id}`, updatedEmployee);
+      const response = await axios.put(`http://localhost:5000/api/duty/editduty/${selectedDuty._id}`, updatedDuty);
 
       if (response.status === 200) {
-        messageApi.success('Employee updated successfully!');
+        messageApi.success('Duty updated successfully!');
         setUpdateOpen(false);
         fetchDuties();
       }
     } catch (error) {
       console.error(error);
-      messageApi.error('Failed to update employee. Please try again.');
+      messageApi.error('Failed to update duty. Please try again.');
     }
   };
 
@@ -640,14 +639,14 @@ function Duty() {
 
       {/* Update */}
       <Drawer
-        title="Edit Employee"
+        title="Edit Duty"
         width={720}
         onClose={updateOnClose}
         open={updateOpen}
         extra={
           <Space>
             <Button onClick={updateOnClose}>Cancel</Button>
-            <Button onClick={handleUpdateEmployee} type="primary" className='bg-[black]'>
+            <Button onClick={handleUpdateDuty} type="primary" className='bg-[black]'>
               Update
             </Button>
           </Space>
@@ -657,114 +656,100 @@ function Duty() {
           <Row gutter={16}>
             <Col span={12}>
               <Form.Item
-                name="firstname"
-                label="First name"
-                rules={[{ required: true, message: 'Please enter first name' }]}
+                name="employeeId"
+                label="Employee Id"
+                rules={[{ required: true, message: 'Please enter employee id' }]}
               >
-                <Input placeholder="Enter first name" />
+                <Input placeholder="Enter Employee Id" />
               </Form.Item>
             </Col>
             <Col span={12}>
               <Form.Item
-                name="lastname"
-                label="Last name"
-                rules={[{ required: true, message: 'Please enter last name' }]}
+                name="dutyDate"
+                label="Duty Date"
+                rules={[{ required: true, message: 'Please enter duty date' }]}
               >
-                <Input placeholder="Enter last name" />
+                <DatePicker placeholder="Enter duty date" style={{ width: "100%" }} />
               </Form.Item>
             </Col>
           </Row>
           <Row gutter={16}>
             <Col span={12}>
               <Form.Item
-                name="dob"
-                label="Date of birth"
-                rules={[{ required: true, message: 'Please enter date of birth' }]}
+                name="vehicleId"
+                label="Vehicle Id"
+                rules={[{ required: true, message: 'Please enter vehicle id' }]}
               >
-                <Input placeholder="YYYY-MM-DD" />
+                <Input placeholder="Enter vehicle id" />
               </Form.Item>
             </Col>
             <Col span={12}>
               <Form.Item
-                name="gender"
-                label="Gender"
-                rules={[{ required: true, message: 'Please select gender' }]}
+                name="startLocation"
+                label="Start Location"
+                rules={[{ required: true, message: 'Please enter start location' }]}
               >
-                <Select placeholder="Select gender">
-                  <Option value="male">Male</Option>
-                  <Option value="female">Female</Option>
-                  <Option value="other">Other</Option>
-                </Select>
+                <Input placeholder="Enter start location" />
               </Form.Item>
             </Col>
           </Row>
           <Form.Item
-            name="address"
-            label="Address"
-            rules={[{ required: true, message: 'Please enter address' }]}
+            name="endLocation"
+            label="End Location"
+            rules={[{ required: true, message: 'Please enter end location' }]}
           >
-            <Input.TextArea rows={4} placeholder="Enter address" />
+            <Input rows={4} placeholder="Enter end location" />
           </Form.Item>
           <Row gutter={16}>
             <Col span={12}>
               <Form.Item
-                name="contact"
-                label="Contact"
-                rules={[{ required: true, message: 'Please enter contact number' }]}
+                name="distance"
+                label="Distance (km)"
+                rules={[{ required: true, message: 'Please enter distance' }]}
               >
-                <Input placeholder="Enter contact number" />
+                <Input placeholder="Enter distance" />
               </Form.Item>
             </Col>
             <Col span={12}>
               <Form.Item
-                name="email"
-                label="Email"
+                name="dutyStatus"
+                label="Duty Status"
                 rules={[
-                  { required: true, message: 'Please enter email' },
-                  { type: 'email', message: 'Please enter a valid email' }
+                  { required: true, message: 'Please select duty status' },
                 ]}
               >
-                <Input placeholder="Enter email" />
+                <Select placeholder="Select duty status">
+                  <Option value="Pending">Pending</Option>
+                  <Option value="In Progress">In Progress</Option>
+                  <Option value="Completed">Completed</Option>
+                </Select>
               </Form.Item>
             </Col>
           </Row>
           <Row gutter={16}>
             <Col span={12}>
               <Form.Item
-                name="password"
-                label="Password"
-                rules={[{ required: true, message: 'Please enter password' }]}
+                name="shift"
+                label="Shift"
+                rules={[{ required: true, message: 'Please select shift' }]}
               >
-                <Input.Password placeholder="Enter password" />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                name="status"
-                label="Status"
-                rules={[{ required: true, message: 'Please select status' }]}
-              >
-                <Select placeholder="Select status">
-                  <Option value="Active">Active</Option>
-                  <Option value="Inactive">Inactive</Option>
-                  <Option value="Suspended">Suspended</Option>
+                <Select placeholder="Select shift">
+                  <Option value="Morning">Morning</Option>
+                  <Option value="Afternoon">Afternoon</Option>
+                  <Option value="Night">Night</Option>
                 </Select>
               </Form.Item>
             </Col>
           </Row>
-          <Form.Item
-            name="role"
-            label="Role"
-            rules={[{ required: true, message: 'Please select role' }]}
-          >
-            <Select placeholder="Select role">
-              <Option value="Driver">Driver</Option>
-              <Option value="Admin">Admin</Option>
-              <Option value="Supervisor">Supervisor</Option>
-              <Option value="Mechanic">Mechanic</Option>
-              <Option value="Other">Other</Option>
-            </Select>
-          </Form.Item>
+          <Col span={24}>
+            <Form.Item
+              name="notes"
+              label="Notes"
+              rules={[{ required: true, message: 'Please enter notes' }]}
+            >
+              <Input.TextArea placeholder="Enter notes" />
+            </Form.Item>
+          </Col>
         </Form>
       </Drawer>
     </>

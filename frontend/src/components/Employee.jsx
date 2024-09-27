@@ -387,7 +387,7 @@ function Employee() {
     updateForm.setFieldsValue({
       firstname: employee.firstname,
       lastname: employee.lastname,
-      dob: employee.dob,
+      dob: moment(employee.dob, 'YYYY-MM-DD'), // Convert to moment object
       address: employee.address,
       gender: employee.gender,
       contact: employee.contact,
@@ -692,7 +692,7 @@ function Employee() {
                 label="Date of birth"
                 rules={[{ required: true, message: 'Please enter date of birth' }]}
               >
-                <DatePicker placeholder="YYYY-MM-DD" />
+                <DatePicker placeholder="YYYY-MM-DD" style={{width:"100%"}}/>
               </Form.Item>
             </Col>
             <Col span={12}>

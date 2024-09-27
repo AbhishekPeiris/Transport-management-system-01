@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
   },
   tableCol: {
-    width: "100px",
+    width: "150px",
     borderStyle: "solid",
     borderColor: "#EEEEEE",
     borderWidth: 1,
@@ -88,65 +88,77 @@ const styles = StyleSheet.create({
 });
 
 // Define the PDF Document component
-const MyDocument = ({ employees }) => (
+const MyDocument = ({ duties }) => (
   <Document>
-    <Page size="A3" style={styles.page}>
+    <Page size="A1" style={styles.page}>
       <View style={styles.section}>
-        <Text>Employee List</Text>
+        <Text>Duty List</Text>
         <View style={styles.table}>
           {/* Table header */}
           <View style={styles.tableRow}>
             <View style={styles.tableCol}>
-              <Text style={styles.tableCell}>Name</Text>
+              <Text style={styles.tableCell}>Duty ID</Text>
             </View>
             <View style={styles.tableCol}>
-              <Text style={styles.tableCell}>DOB</Text>
+              <Text style={styles.tableCell}>Employee ID</Text>
             </View>
             <View style={styles.tableCol}>
-              <Text style={styles.tableCell}>Address</Text>
+              <Text style={styles.tableCell}>Duty Date</Text>
             </View>
             <View style={styles.tableCol}>
-              <Text style={styles.tableCell}>Gender</Text>
+              <Text style={styles.tableCell}>Vehicle ID</Text>
             </View>
             <View style={styles.tableCol}>
-              <Text style={styles.tableCell}>Contact</Text>
+              <Text style={styles.tableCell}>Start Location</Text>
             </View>
             <View style={styles.tableCol}>
-              <Text style={styles.tableCell}>Email</Text>
+              <Text style={styles.tableCell}>End Location</Text>
             </View>
             <View style={styles.tableCol}>
-              <Text style={styles.tableCell}>Role</Text>
+              <Text style={styles.tableCell}>Distance</Text>
             </View>
             <View style={styles.tableCol}>
-              <Text style={styles.tableCell}>Status</Text>
+              <Text style={styles.tableCell}>Duty Status</Text>
+            </View>
+            <View style={styles.tableCol}>
+              <Text style={styles.tableCell}>Shift</Text>
+            </View>
+            <View style={styles.tableCol}>
+              <Text style={styles.tableCell}>Notes</Text>
             </View>
           </View>
           {/* Table body */}
-          {employees.map((employee) => (
-            <View style={styles.tableRow} key={employee._id}>
+          {duties.map((duty) => (
+            <View style={styles.tableRow} key={duty._id}>
               <View style={styles.tableCol}>
-                <Text style={styles.tableCell}>{`${employee.firstname} ${employee.lastname}`}</Text>
+                <Text style={styles.tableCell}>{duty._id}</Text>
               </View>
               <View style={styles.tableCol}>
-                <Text style={styles.tableCell}>{employee.dob}</Text>
+                <Text style={styles.tableCell}>{duty.employeeId}</Text>
               </View>
               <View style={styles.tableCol}>
-                <Text style={styles.tableCell}>{employee.address}</Text>
+                <Text style={styles.tableCell}>{duty.dutyDate}</Text>
               </View>
               <View style={styles.tableCol}>
-                <Text style={styles.tableCell}>{employee.gender}</Text>
+                <Text style={styles.tableCell}>{duty.vehicleId}</Text>
               </View>
               <View style={styles.tableCol}>
-                <Text style={styles.tableCell}>{employee.contact}</Text>
+                <Text style={styles.tableCell}>{duty.startLocation}</Text>
               </View>
               <View style={styles.tableCol}>
-                <Text style={styles.tableCell}>{employee.email}</Text>
+                <Text style={styles.tableCell}>{duty.endLocation}</Text>
               </View>
               <View style={styles.tableCol}>
-                <Text style={styles.tableCell}>{employee.role}</Text>
+                <Text style={styles.tableCell}>{duty.distance}</Text>
               </View>
               <View style={styles.tableCol}>
-                <Text style={styles.tableCell}>{employee.status}</Text>
+                <Text style={styles.tableCell}>{duty.dutyStatus}</Text>
+              </View>
+              <View style={styles.tableCol}>
+                <Text style={styles.tableCell}>{duty.shift}</Text>
+              </View>
+              <View style={styles.tableCol}>
+                <Text style={styles.tableCell}>{duty.notes}</Text>
               </View>
             </View>
           ))}
@@ -472,8 +484,8 @@ function Duty() {
 
           {/* PDF */}
           <PDFDownloadLink
-            document={<MyDocument employees={filterDuties} />}
-            fileName="employees.pdf"
+            document={<MyDocument duties={filterDuties} />}
+            fileName="duties.pdf"
           >
             {({ blob, url, loading, error }) =>
               loading ? (

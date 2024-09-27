@@ -5,6 +5,7 @@ const Duty = require('../models/Duty');
 router.route('/addduty').post(async (req, res) => {
 
     const {
+        did,
         employeeId,
         dutyDate,
         vehicleId,
@@ -17,7 +18,7 @@ router.route('/addduty').post(async (req, res) => {
     } = req.body;
 
     const newDuty = new Duty({
-
+        did,
         employeeId,
         dutyDate,
         vehicleId,
@@ -83,6 +84,7 @@ router.route('/editduty/:id').put(async (req, res) => {
     const dutyId = req.params.id;
 
     const {
+        did,
         employeeId,
         dutyDate,
         vehicleId,
@@ -95,7 +97,7 @@ router.route('/editduty/:id').put(async (req, res) => {
     } = req.body;
 
     const updateDuty = {
-
+        did,
         employeeId,
         dutyDate,
         vehicleId,

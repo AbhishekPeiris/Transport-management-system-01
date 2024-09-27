@@ -3,6 +3,10 @@ const Schema = mongoose.Schema;
 
 const dutySchema = new Schema({
 
+    did: {
+        type: String,
+        required: true,
+    },
     employeeId: {
         type: String,
         required: true,

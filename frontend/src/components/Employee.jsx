@@ -128,7 +128,7 @@ const MyDocument = ({ employees }) => (
           {employees.map((employee) => (
             <View style={styles.tableRow} key={employee._id}>
               <View style={styles.tableCol}>
-                <Text style={styles.tableCell}>{employee._id}</Text>
+                <Text style={styles.tableCell}>{employee.eid}</Text>
               </View>
               <View style={styles.tableCol}>
                 <Text style={styles.tableCell}>{`${employee.firstname} ${employee.lastname}`}</Text>
@@ -263,8 +263,8 @@ function Employee() {
   const columns = [
     {
       title: 'Employee ID',
-      dataIndex: '_id',
-      key: '_id',
+      dataIndex: 'eid',
+      key: 'eid',
       className: 'px-4',
     },
     {
@@ -366,7 +366,7 @@ function Employee() {
   const onSearch = (value) => {
     const lowercasedValue = value.toLowerCase();
     const filtered = employees.filter(employee =>
-      employee._id.toLowerCase().includes(lowercasedValue)
+      employee.eid.toLowerCase().includes(lowercasedValue)
     );
     setFilterEmployees(filtered);
   };
@@ -385,6 +385,7 @@ function Employee() {
     setUpdateOpen(true);
 
     updateForm.setFieldsValue({
+      eid: employee.eid,
       firstname: employee.firstname,
       lastname: employee.lastname,
       dob: moment(employee.dob, 'YYYY-MM-DD'), // Convert to moment object
@@ -535,6 +536,13 @@ function Employee() {
         }
       >
         <Form form={form} layout="vertical">
+          <Form.Item
+            name="eid"
+            label="Employee ID"
+            rules={[{ required: true, message: 'Please enter employee id' }]}
+          >
+            <Input placeholder="Enter employee" />
+          </Form.Item>
           <Row gutter={16}>
             <Col span={12}>
               <Form.Item
@@ -665,6 +673,13 @@ function Employee() {
         }
       >
         <Form form={updateForm} layout="vertical" hideRequiredMark>
+          <Form.Item
+            name="eid"
+            label="Employee ID"
+            rules={[{ required: true, message: 'Please enter employee id' }]}
+          >
+            <Input placeholder="Enter employee" />
+          </Form.Item>
           <Row gutter={16}>
             <Col span={12}>
               <Form.Item

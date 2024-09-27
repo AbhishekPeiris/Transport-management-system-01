@@ -21,7 +21,7 @@ const items = [
         getItem("Employees", "/employee"),
     ]),
     getItem("Duty Management", "sub4", <Icon icon="material-symbols:work-outline" />, [
-        getItem("Duty", "/duty"),
+        getItem("Duties", "/duty"),
     ]),
 ];
 

@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { DownloadOutlined } from '@ant-design/icons';
-import { Input, Button, Space, Table, Drawer, Form, Row, Col, Select, message, Popconfirm } from 'antd';
+import { Input, Button, Space, Table, Drawer, Form, Row, Col, Select, message, Popconfirm, DatePicker } from 'antd';
 import { Icon } from "@iconify/react";
 import '../styles/table.css';
 import axios from "axios";
 import { Document, Page, Text, View, StyleSheet, PDFDownloadLink } from '@react-pdf/renderer';
+import moment from 'moment'; 
 
 const { Search } = Input;
 const { Option } = Select;
@@ -61,7 +62,7 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
   },
   tableCol: {
-    width: "100px",
+    width: "150px",
     borderStyle: "solid",
     borderColor: "#EEEEEE",
     borderWidth: 1,
@@ -89,12 +90,15 @@ const styles = StyleSheet.create({
 // Define the PDF Document component
 const MyDocument = ({ employees }) => (
   <Document>
-    <Page size="A3" style={styles.page}>
+    <Page size="A1" style={styles.page}>
       <View style={styles.section}>
         <Text>Employee List</Text>
         <View style={styles.table}>
           {/* Table header */}
           <View style={styles.tableRow}>
+            <View style={styles.tableCol}>
+              <Text style={styles.tableCell}>Employee ID</Text>
+            </View>
             <View style={styles.tableCol}>
               <Text style={styles.tableCell}>Name</Text>
             </View>
@@ -123,6 +127,9 @@ const MyDocument = ({ employees }) => (
           {/* Table body */}
           {employees.map((employee) => (
             <View style={styles.tableRow} key={employee._id}>
+              <View style={styles.tableCol}>
+                <Text style={styles.tableCell}>{employee._id}</Text>
+              </View>
               <View style={styles.tableCol}>
                 <Text style={styles.tableCell}>{`${employee.firstname} ${employee.lastname}`}</Text>
               </View>
@@ -186,6 +193,7 @@ function Employee() {
       const employeesWithKeys = response.data.employee.map(employee => ({
         ...employee,
         key: employee._id,
+        dob: moment(employee.dob).format('YYYY-MM-DD'), 
       }));
       setEmployees(employeesWithKeys);
       setFilterEmployees(employeesWithKeys);
@@ -276,6 +284,7 @@ function Employee() {
       dataIndex: 'dob',
       key: 'dob',
       className: 'px-4',
+      render: (dob) => moment(dob).format('YYYY-MM-DD'), // Format the date
     },
     {
       title: 'Address',
@@ -553,7 +562,7 @@ function Employee() {
                 label="Date of birth"
                 rules={[{ required: true, message: 'Please enter date of birth' }]}
               >
-                <Input placeholder="YYYY-MM-DD" />
+                <DatePicker placeholder="YYYY-MM-DD" style={{width:"100%"}}/>
               </Form.Item>
             </Col>
             <Col span={12}>
@@ -683,7 +692,7 @@ function Employee() {
                 label="Date of birth"
                 rules={[{ required: true, message: 'Please enter date of birth' }]}
               >
-                <Input placeholder="YYYY-MM-DD" />
+                <DatePicker placeholder="YYYY-MM-DD" />
               </Form.Item>
             </Col>
             <Col span={12}>

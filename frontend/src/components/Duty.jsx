@@ -5,6 +5,7 @@ import { Icon } from "@iconify/react";
 import '../styles/table.css';
 import axios from "axios";
 import { Document, Page, Text, View, StyleSheet, PDFDownloadLink } from '@react-pdf/renderer';
+import moment from 'moment'; 
 
 const { Search } = Input;
 const { Option } = Select;
@@ -159,15 +160,15 @@ function Duty() {
   const [messageApi, contextHolder] = message.useMessage();
 
   // Read
-  const [employees, setEmployees] = useState([]);
+  const [duties, setDuties] = useState([]);
 
   // Search Filter
-  const [filterEmployees, setFilterEmployees] = useState([]);
+  const [filterDuties, setFilterDuties] = useState([]);
   const [selectedRole, setSelectedRole] = useState(null);
   const [selectedStatus, setSelectedStatus] = useState(null);
 
   // Create
-  const [openAddEmployee, setOpenAddEmployee] = useState(false);
+  const [openAddDuty, setOpenAddDuty] = useState(false);
   const [form] = Form.useForm();
 
   // Update
@@ -177,32 +178,33 @@ function Duty() {
 
   // Read
   useEffect(() => {
-    fetchEmployees();
+    fetchDuties();
   }, []);
 
-  const fetchEmployees = async () => {
+  const fetchDuties = async () => {
     try {
-      const response = await axios.post("http://localhost:5000/api/employee/getemployee");
-      const employeesWithKeys = response.data.employee.map(employee => ({
-        ...employee,
-        key: employee._id,
+      const response = await axios.post("http://localhost:5000/api/duty/getduty");
+      const dutiesWithKeys = response.data.duties.map(duties => ({
+        ...duties,
+        key: duties._id,
+        dob: moment(duties.dob).format('YYYY-MM-DD'), 
       }));
-      setEmployees(employeesWithKeys);
-      setFilterEmployees(employeesWithKeys);
+      setDuties(dutiesWithKeys);
+      setFilterDuties(dutiesWithKeys);
     } catch (error) {
-      console.error("Error fetching employees:", error);
-      messageApi.error('Failed to fetch employees');
+      console.error("Error fetching duties:", error);
+      messageApi.error('Failed to fetch duties');
     }
   };
 
   // Create
   const addSuccess = () => {
-    messageApi.success('Employee added successfully!');
-    fetchEmployees();
+    messageApi.success('Duty added successfully!');
+    fetchDuties();
   };
 
   const addError = () => {
-    messageApi.error('Failed to add employee. Please try again.');
+    messageApi.error('Failed to add duty. Please try again.');
   };
 
   const addWarning = (warningMessage) => {
@@ -210,18 +212,18 @@ function Duty() {
   };
 
   const showDrawer = () => {
-    setOpenAddEmployee(true);
+    setOpenAddDuty(true);
   };
 
   const onClose = () => {
-    setOpenAddEmployee(false);
+    setOpenAddDuty(false);
     form.resetFields();
   };
 
-  async function addNewEmployee() {
+  async function addNewDuty() {
     try {
       const values = await form.validateFields();
-      const response = await axios.post('http://localhost:5000/api/employee/register', values);
+      const response = await axios.post('http://localhost:5000/api/duty/addduty', values);
 
       if (response.status === 200) {
         addSuccess();
@@ -242,8 +244,8 @@ function Duty() {
     try {
       const response = await axios.delete(`http://localhost:5000/api/employee/deleteemloyee/${id}`);
       messageApi.success('Employee deleted successfully!');
-      setEmployees((prevEmployees) => prevEmployees.filter(employee => employee._id !== id));
-      setFilterEmployees((prevEmployees) => prevEmployees.filter(employee => employee._id !== id));
+      setDuties((prevEmployees) => prevEmployees.filter(employee => employee._id !== id));
+      setFilterDuties((prevEmployees) => prevEmployees.filter(employee => employee._id !== id));
     } catch (error) {
       console.log(error);
       messageApi.error('Failed to delete employee. Please try again.');
@@ -260,60 +262,54 @@ function Duty() {
       className: 'px-4',
     },
     {
-      title: 'Firstname',
-      dataIndex: 'firstname',
-      key: 'firstname',
+      title: 'Duty Date',
+      dataIndex: 'dutyDate',
+      key: 'dutyDate',
+      className: 'px-4',
+      render: (dob) => moment(dob).format('YYYY-MM-DD'),
+    },
+    {
+      title: 'Vhicle ID',
+      dataIndex: 'vehicleId',
+      key: 'vehicleId',
       className: 'px-4',
     },
     {
-      title: 'Lastname',
-      dataIndex: 'lastname',
-      key: 'lastname',
+      title: 'Start Location',
+      dataIndex: 'startLocation',
+      key: 'startLocation',
       className: 'px-4',
     },
     {
-      title: 'Date of Birth',
-      dataIndex: 'dob',
-      key: 'dob',
+      title: 'End Location',
+      dataIndex: 'endLocation',
+      key: 'endLocation',
       className: 'px-4',
     },
     {
-      title: 'Address',
-      dataIndex: 'address',
-      key: 'address',
+      title: 'Distance',
+      dataIndex: 'distance',
+      key: 'distance',
       className: 'px-4',
     },
     {
-      title: 'Gender',
-      dataIndex: 'gender',
-      key: 'gender',
+      title: 'DutyStatus',
+      dataIndex: 'dutyStatus',
+      key: 'dutyStatus',
       className: 'px-4',
     },
     {
-      title: 'Contact',
-      dataIndex: 'contact',
-      key: 'contact',
+      title: 'Shift',
+      dataIndex: 'shift',
+      key: 'shift',
       className: 'px-4',
     },
     {
-      title: 'Email',
-      dataIndex: 'email',
-      key: 'email',
+      title: 'Notes',
+      dataIndex: 'notes',
+      key: 'notes',
       className: 'px-4',
     },
-    {
-      title: 'Status',
-      dataIndex: 'status',
-      key: 'status',
-      className: 'px-4',
-    },
-    {
-      title: 'Role',
-      dataIndex: 'role',
-      key: 'role',
-      className: 'px-4',
-    },
-
     {
       title: '',
       key: 'action',
@@ -338,10 +334,10 @@ function Duty() {
   // Search Filter
   useEffect(() => {
     filterEmployee();
-  }, [selectedRole, selectedStatus, employees]);
+  }, [selectedRole, selectedStatus, duties]);
 
   const filterEmployee = () => {
-    let filtered = [...employees];
+    let filtered = [...duties];
 
     if (selectedRole && selectedRole !== 'All') {
       filtered = filtered.filter(employee => employee.role === selectedRole);
@@ -351,15 +347,15 @@ function Duty() {
       filtered = filtered.filter(employee => employee.status === selectedStatus);
     }
 
-    setFilterEmployees(filtered);
+    setFilterDuties(filtered);
   };
 
   const onSearch = (value) => {
     const lowercasedValue = value.toLowerCase();
-    const filtered = employees.filter(employee =>
+    const filtered = duties.filter(employee =>
       employee._id.toLowerCase().includes(lowercasedValue)
     );
-    setFilterEmployees(filtered);
+    setFilterDuties(filtered);
   };
 
   const handleRoleChange = (value) => {
@@ -408,7 +404,7 @@ function Duty() {
       if (response.status === 200) {
         messageApi.success('Employee updated successfully!');
         setUpdateOpen(false);
-        fetchEmployees();
+        fetchDuties();
       }
     } catch (error) {
       console.error(error);
@@ -424,7 +420,7 @@ function Duty() {
     <>
       {contextHolder}
       <div className="flex justify-between items-center h-[74px] bg-white rounded-[11px] m-[15px] px-[15px]">
-        <div className="text-slate-900 text-xl font-semibold font-['Poppins']">Employees&nbsp;&nbsp;</div>
+        <div className="text-slate-900 text-xl font-semibold font-['Poppins']">Duties</div>
         <Space>
 
           {/* Search Filter */}
@@ -472,7 +468,7 @@ function Duty() {
 
           {/* PDF */}
           <PDFDownloadLink
-            document={<MyDocument employees={filterEmployees} />}
+            document={<MyDocument employees={filterDuties} />}
             fileName="employees.pdf"
           >
             {({ blob, url, loading, error }) =>
@@ -496,7 +492,7 @@ function Duty() {
             onClick={showDrawer}
             size="large"
           >
-            Add New Employee
+            Add New Duty
           </Button>
         </Space>
       </div>
@@ -504,7 +500,7 @@ function Duty() {
       <div className="p-4 m-4 bg-white rounded-xl">
         <Table
           columns={columns}
-          dataSource={filterEmployees}
+          dataSource={filterDuties}
           scroll={{ x: 1000 }}
           pagination={{ pageSize: 10 }}
         />
@@ -512,14 +508,14 @@ function Duty() {
 
       {/* Create */}
       <Drawer
-        title="Add Employee"
+        title="Add Duty"
         width={720}
         onClose={onClose}
-        open={openAddEmployee}
+        open={openAddDuty}
         extra={
           <Space>
             <Button onClick={onClose}>Cancel</Button>
-            <Button onClick={addNewEmployee} type="primary" className='bg-[black]'>
+            <Button onClick={addNewDuty} type="primary" className='bg-[black]'>
               Submit
             </Button>
           </Space>
@@ -529,11 +525,11 @@ function Duty() {
           <Row gutter={16}>
             <Col span={12}>
               <Form.Item
-                name="firstname"
-                label="First name"
-                rules={[{ required: true, message: 'Please enter first name' }]}
+                name="employeeId"
+                label="Employee Id"
+                rules={[{ required: true, message: 'Please enter employee id' }]}
               >
-                <Input placeholder="Enter first name" />
+                <Input placeholder="Enter Employee Id" />
               </Form.Item>
             </Col>
             <Col span={12}>

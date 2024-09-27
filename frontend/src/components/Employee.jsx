@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { DownloadOutlined } from '@ant-design/icons';
-import { Input, Button, Space, Table, Drawer, Form, Row, Col, Select, message, Popconfirm } from 'antd';
+import { Input, Button, Space, Table, Drawer, Form, Row, Col, Select, message, Popconfirm, DatePicker } from 'antd';
 import { Icon } from "@iconify/react";
 import '../styles/table.css';
 import axios from "axios";
 import { Document, Page, Text, View, StyleSheet, PDFDownloadLink } from '@react-pdf/renderer';
+import moment from 'moment'; 
 
 const { Search } = Input;
 const { Option } = Select;
@@ -186,6 +187,7 @@ function Employee() {
       const employeesWithKeys = response.data.employee.map(employee => ({
         ...employee,
         key: employee._id,
+        dob: moment(employee.dob).format('YYYY-MM-DD'), 
       }));
       setEmployees(employeesWithKeys);
       setFilterEmployees(employeesWithKeys);
@@ -276,6 +278,7 @@ function Employee() {
       dataIndex: 'dob',
       key: 'dob',
       className: 'px-4',
+      render: (dob) => moment(dob).format('YYYY-MM-DD'), // Format the date
     },
     {
       title: 'Address',
@@ -553,7 +556,7 @@ function Employee() {
                 label="Date of birth"
                 rules={[{ required: true, message: 'Please enter date of birth' }]}
               >
-                <Input placeholder="YYYY-MM-DD" />
+                <DatePicker placeholder="YYYY-MM-DD" style={{width:"100%"}}/>
               </Form.Item>
             </Col>
             <Col span={12}>
@@ -683,7 +686,7 @@ function Employee() {
                 label="Date of birth"
                 rules={[{ required: true, message: 'Please enter date of birth' }]}
               >
-                <Input placeholder="YYYY-MM-DD" />
+                <DatePicker placeholder="YYYY-MM-DD" />
               </Form.Item>
             </Col>
             <Col span={12}>

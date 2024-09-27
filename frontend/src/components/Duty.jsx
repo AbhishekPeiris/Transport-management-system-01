@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { DownloadOutlined } from '@ant-design/icons';
-import { Input, Button, Space, Table, Drawer, Form, Row, Col, Select, message, Popconfirm } from 'antd';
+import { Input, Button, Space, Table, Drawer, Form, Row, Col, Select, message, Popconfirm, DatePicker } from 'antd';
 import { Icon } from "@iconify/react";
 import '../styles/table.css';
 import axios from "axios";
@@ -256,9 +256,15 @@ function Duty() {
   // Table
   const columns = [
     {
-      title: 'Employee ID',
+      title: 'Duty ID',
       dataIndex: '_id',
       key: '_id',
+      className: 'px-4',
+    },
+    {
+      title: 'Employee ID',
+      dataIndex: 'employeeId',
+      key: 'employeeId',
       className: 'px-4',
     },
     {
@@ -287,7 +293,7 @@ function Duty() {
       className: 'px-4',
     },
     {
-      title: 'Distance',
+      title: 'Distance (km)',
       dataIndex: 'distance',
       key: 'distance',
       className: 'px-4',
@@ -534,105 +540,91 @@ function Duty() {
             </Col>
             <Col span={12}>
               <Form.Item
-                name="lastname"
-                label="Last name"
-                rules={[{ required: true, message: 'Please enter last name' }]}
+                name="dutyDate"
+                label="Duty Date"
+                rules={[{ required: true, message: 'Please enter duty date' }]}
               >
-                <Input placeholder="Enter last name" />
+                <DatePicker placeholder="Enter duty date" style={{width:"100%"}}/>
               </Form.Item>
             </Col>
           </Row>
           <Row gutter={16}>
             <Col span={12}>
               <Form.Item
-                name="dob"
-                label="Date of birth"
-                rules={[{ required: true, message: 'Please enter date of birth' }]}
+                name="vehicleId"
+                label="Vehicle Id"
+                rules={[{ required: true, message: 'Please enter vehicle id' }]}
               >
-                <Input placeholder="YYYY-MM-DD" />
+                <Input placeholder="Enter vehicle id" />
               </Form.Item>
             </Col>
             <Col span={12}>
               <Form.Item
-                name="gender"
-                label="Gender"
-                rules={[{ required: true, message: 'Please select gender' }]}
+                name="startLocation"
+                label="Start Location"
+                rules={[{ required: true, message: 'Please enter start location' }]}
               >
-                <Select placeholder="Select gender">
-                  <Option value="male">Male</Option>
-                  <Option value="female">Female</Option>
-                  <Option value="other">Other</Option>
-                </Select>
+                <Input placeholder="Enter start location" />
               </Form.Item>
             </Col>
           </Row>
           <Form.Item
-            name="address"
-            label="Address"
-            rules={[{ required: true, message: 'Please enter address' }]}
+            name="endLocation"
+            label="End Location"
+            rules={[{ required: true, message: 'Please enter end location' }]}
           >
-            <Input.TextArea rows={4} placeholder="Enter address" />
+            <Input rows={4} placeholder="Enter end location" />
           </Form.Item>
           <Row gutter={16}>
             <Col span={12}>
               <Form.Item
-                name="contact"
-                label="Contact"
-                rules={[{ required: true, message: 'Please enter contact number' }]}
+                name="distance"
+                label="Distance (km)"
+                rules={[{ required: true, message: 'Please enter distance' }]}
               >
-                <Input placeholder="Enter contact number" />
+                <Input placeholder="Enter distance" />
               </Form.Item>
             </Col>
             <Col span={12}>
               <Form.Item
-                name="email"
-                label="Email"
+                name="dutyStatus"
+                label="Duty Status"
                 rules={[
-                  { required: true, message: 'Please enter email' },
-                  { type: 'email', message: 'Please enter a valid email' }
+                  { required: true, message: 'Please select duty status' },
                 ]}
               >
-                <Input placeholder="Enter email" />
+                <Select placeholder="Select duty status">
+                  <Option value="Pending">Pending</Option>
+                  <Option value="In Progress">In Progress</Option>
+                  <Option value="Completed">Completed</Option>
+                </Select>
               </Form.Item>
             </Col>
           </Row>
           <Row gutter={16}>
             <Col span={12}>
               <Form.Item
-                name="password"
-                label="Password"
-                rules={[{ required: true, message: 'Please enter password' }]}
+                name="shift"
+                label="Shift"
+                rules={[{ required: true, message: 'Please select shift' }]}
               >
-                <Input.Password placeholder="Enter password" />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                name="status"
-                label="Status"
-                rules={[{ required: true, message: 'Please select status' }]}
-              >
-                <Select placeholder="Select status">
-                  <Option value="Active">Active</Option>
-                  <Option value="Inactive">Inactive</Option>
-                  <Option value="Suspended">Suspended</Option>
+                <Select placeholder="Select shift">
+                  <Option value="Morning">Morning</Option>
+                  <Option value="Afternoon">Afternoon</Option>
+                  <Option value="Night">Night</Option>
                 </Select>
               </Form.Item>
             </Col>
           </Row>
-          <Form.Item
-            name="role"
-            label="Role"
-            rules={[{ required: true, message: 'Please select role' }]}
-          >
-            <Select placeholder="Select role">
-              <Option value="Driver">Driver</Option>
-              <Option value="Admin">Admin</Option>
-              <Option value="Supervisor">Supervisor</Option>
-              <Option value="Mechanic">Mechanic</Option>
-              <Option value="Other">Other</Option>
-            </Select>
-          </Form.Item>
+          <Col span={24}>
+            <Form.Item
+              name="notes"
+              label="Notes"
+              rules={[{ required: true, message: 'Please enter notes' }]}
+            >
+              <Input.TextArea placeholder="Enter notes" />
+            </Form.Item>
+          </Col>
         </Form>
       </Drawer>
 

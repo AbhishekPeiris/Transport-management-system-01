@@ -7,7 +7,8 @@ import Duty from "./components/Duty";
 import { NavBar, SideBar as ImportedSideMenu } from "./components";
 import Login from "./pages/Auth/Login";
 import SignUp from "./pages/Auth/Signup";
-
+import AttendanceHistory from "./components/AttendanceHistory";
+import AttendanceChart from "./components/AttendanceChart";
 
 function MainLayout() {
   return (
@@ -23,6 +24,8 @@ function MainLayout() {
               <Route path="/dashboard" element={<DashBoard />} />
               <Route path="/employee" element={<Employee />} />
               <Route path="/duty" element={<Duty />} />
+              <Route path="/attendance" element={<AttendanceHistory />} />
+              <Route path="/attendance-chart" element={<AttendanceChart />} />
             </Routes>
           </div>
         </div>
@@ -44,4 +47,3 @@ function App() {
 }
 
 export default App;
-

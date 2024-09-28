@@ -37,6 +37,20 @@ function NavBar() {
             type: "divider",
         },
         {
+            label: <a href="/attendance">Attendance History</a>,
+            key: "attendance",
+        },
+        {
+            type: "divider",
+        },
+        {
+            label: <a href="/attendance-chart">Attendance Chart</a>,
+            key: "attendance-chart",
+        },
+        {
+            type: "divider",
+        },
+        {
             label: <a onClick={handleLogout}>Log Out</a>,
             key: "logout",
         },

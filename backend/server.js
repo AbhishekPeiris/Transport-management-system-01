@@ -26,11 +26,12 @@ connection.once('open', () => {
 
 const EmployeeRoute = require('./routes/EmployeeRoute');
 const DutyRoute = require('./routes/DutyRoute');
+const AttendanceRoute = require('./routes/AttendanceRoute');
 
 
 
 app.use('/api/employee', EmployeeRoute);
 app.use('/api/duty', DutyRoute);
-
+app.use('/api/attendance', AttendanceRoute);
 
 

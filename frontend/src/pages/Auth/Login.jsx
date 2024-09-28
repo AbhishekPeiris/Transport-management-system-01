@@ -15,9 +15,9 @@ const Login = () => {
     const handleLogin = async () => {
         try {
             setLoading(true);
-            
+
             const user = { email, password };
-            
+
             const response = await axios.post("http://localhost:5000/api/employee/login", user);
             setLoading(false);
 
@@ -28,7 +28,14 @@ const Login = () => {
                 navigate("/#");
                 return;
             }
-            navigate("/dashboard ");
+
+            // Mark attendance
+            await axios.post("http://localhost:5000/api/attendance/mark", {
+                employeeId: userData.loginEmployee._id,
+                date: new Date()
+            });
+
+            navigate("/dashboard");
 
             localStorage.setItem("currentUser", JSON.stringify(userData));
             localStorage.setItem("scrollPosition", window.pageYOffset);

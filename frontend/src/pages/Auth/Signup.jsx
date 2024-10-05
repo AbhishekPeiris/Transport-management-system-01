@@ -52,6 +52,14 @@ const Signup = () => {
                 autoComplete="off"
                 form={form}
             >
+                <Form.Item
+                    name="eid"
+                    rules={[
+                        { required: true, message: "Please input eid" },
+                    ]}
+                >
+                    <Input prefix={<UserOutlined />} placeholder="Emloyee ID" />
+                </Form.Item>
                 <Row gutter={16}>
                     <Col xs={24} md={12}>
                         <Form.Item
